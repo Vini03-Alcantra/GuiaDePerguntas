@@ -51,13 +51,21 @@ app.post("/salvarpergunta", (req, res) => {
 });
 
 app.get("/pergunta/:id", (req, res) => {
-    var id = req.params.id
+    var id = req.params.id;
     Pergunta.findOne({
         where: {id: id}
     }).then(pergunta => {
         if (pergunta != undefined) {
-            res.render("pergunta", {
-                pergunta: pergunta
+            Resposta.findAll({
+                where: {perguntaId: id},
+                order: [
+                    ['id', 'DESC']
+                ]
+            }).then(respostas => {
+                res.render("pergunta", {
+                    pergunta: pergunta,
+                    respostas: respostas
+                })
             })
         } else{
             res.redirect("/")
@@ -77,4 +85,4 @@ app.post("/responder", (req, res) => {
     })
 })
 
-app.listen(8001, ()=> {console.log("Hello world")})
+app.listen(8002, ()=> {console.log("Hello world")})
